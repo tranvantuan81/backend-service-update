@@ -6,11 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
-import vn.tuanjava.dto.validator.EnumPattern;
-import vn.tuanjava.dto.validator.EnumValue;
-import vn.tuanjava.dto.validator.GenderSubset;
-import vn.tuanjava.dto.validator.PhoneNumber;
+import vn.tuanjava.dto.validator.*;
 import vn.tuanjava.util.Gender;
 import vn.tuanjava.util.UserStatus;
 import vn.tuanjava.util.UserType;
@@ -22,6 +20,7 @@ import java.util.Set;
 import static vn.tuanjava.util.Gender.*;
 
 @Getter
+@Setter
 public class UserRequestDTO implements Serializable {
 
     @NotBlank(message = "firstName must be not blank") // Khong cho phep gia tri blank
@@ -37,9 +36,10 @@ public class UserRequestDTO implements Serializable {
     @PhoneNumber(message = "phone invalid format")
     private String phone;
 
-    @NotNull(message = "dateOfBirth must be not null")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @JsonFormat(pattern = "MM/dd/yyyy")
+    @NotNull(message = "dateOfBirth must be not null") // Kiểm tra không null
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) // Định dạng ngày khi hiển thị
+    @JsonFormat(pattern = "MM/dd/yyyy") // Định dạng ngày khi serialize/deserialize từ JSON
+    @ValidDate(message = "Invalid date")
     private Date dateOfBirth;
 
     //@Pattern(regexp = "^male|female|other$", message = "gender must be one in {male, female, other}")

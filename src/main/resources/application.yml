@@ -2,7 +2,7 @@ server:
   port: 80
 spring:
   application:
-    name: tay-java-app
+    name: tuan-java-app
   profiles:
     active: @spring.profiles.active@
 

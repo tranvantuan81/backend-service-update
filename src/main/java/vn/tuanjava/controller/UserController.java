@@ -19,7 +19,6 @@ import vn.tuanjava.exception.ResourceNotFoundException;
 import vn.tuanjava.service.UserService;
 import vn.tuanjava.util.UserStatus;
 
-
 @RestController
 @RequestMapping("/user")
 @Validated
@@ -47,7 +46,7 @@ public class UserController {
 
     @Operation(summary = "Update user", description = "Send a request via this API to update user")
     @PutMapping("/{userId}")
-    public ResponseData<Void> updateUser(@PathVariable @Min(1) long userId, @Valid @RequestBody UserRequestDTO request) {
+    public ResponseData<?> updateUser(@PathVariable @Min(1) long userId, @Valid @RequestBody UserRequestDTO request) {
         log.info("Request update userId={}", userId);
 
         try {
@@ -61,7 +60,7 @@ public class UserController {
 
     @Operation(summary = "Change status of user", description = "Send a request via this API to change status of user")
     @PatchMapping("/{userId}")
-    public ResponseData<Void> updateStatus(@Min(1) @PathVariable int userId, @RequestParam UserStatus status) {
+    public ResponseData<?> updateStatus(@Min(1) @PathVariable int userId, @RequestParam UserStatus status) {
         log.info("Request change status, userId={}", userId);
 
         try {
@@ -75,7 +74,7 @@ public class UserController {
 
     @Operation(summary = "Delete user permanently", description = "Send a request via this API to delete user permanently")
     @DeleteMapping("/{userId}")
-    public ResponseData<Void> deleteUser(@PathVariable @Min(value = 1, message = "userId must be greater than 0") long userId) {
+    public ResponseData<?> deleteUser(@PathVariable @Min(value = 1, message = "userId must be greater than 0") long userId) {
         log.info("Request delete userId={}", userId);
 
         try {

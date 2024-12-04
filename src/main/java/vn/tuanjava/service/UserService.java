@@ -1,6 +1,7 @@
 package vn.tuanjava.service;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import vn.tuanjava.dto.request.UserRequestDTO;
 import vn.tuanjava.dto.response.PageResponse;
 import vn.tuanjava.dto.response.UserDetailResponse;
@@ -9,6 +10,7 @@ import vn.tuanjava.util.UserStatus;
 import java.util.List;
 
 public interface UserService {
+    UserDetailsService userDetailsService();
 
     long saveUser(UserRequestDTO request);
 

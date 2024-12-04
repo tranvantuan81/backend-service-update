@@ -13,15 +13,9 @@ import java.util.Date;
 import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
+
 public class GlobalExceptionHandler {
 
-    /**
-     * Handle exception when validate data
-     *
-     * @param e
-     * @param request
-     * @return errorResponse
-     */
     @ExceptionHandler({ConstraintViolationException.class,
             MissingServletRequestParameterException.class, MethodArgumentNotValidException.class})
     @ResponseStatus(BAD_REQUEST)
@@ -30,7 +24,6 @@ public class GlobalExceptionHandler {
         errorResponse.setTimestamp(new Date());
         errorResponse.setStatus(BAD_REQUEST.value());
         errorResponse.setPath(request.getDescription(false).replace("uri=", ""));
-
         String message = e.getMessage();
         if (e instanceof MethodArgumentNotValidException) {
             int start = message.lastIndexOf("[") + 1;
@@ -52,13 +45,7 @@ public class GlobalExceptionHandler {
         return errorResponse;
     }
 
-    /**
-     * Handle exception when the request not found data
-     *
-     * @param e
-     * @param request
-     * @return
-     */
+
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(NOT_FOUND)
     public ErrorResponse handleResourceNotFoundException(ResourceNotFoundException e, WebRequest request) {
@@ -71,13 +58,7 @@ public class GlobalExceptionHandler {
 
         return errorResponse;
     }
-    /**
-     * Handle exception when the data is conflicted
-     *
-     * @param e
-     * @param request
-     * @return
-     */
+
     @ExceptionHandler(InvalidDataException.class)
     @ResponseStatus(CONFLICT)
     public ErrorResponse handleDuplicateKeyException(InvalidDataException e, WebRequest request) {
@@ -91,13 +72,6 @@ public class GlobalExceptionHandler {
         return errorResponse;
     }
 
-    /**
-     * Handle exception when internal server error
-     *
-     * @param e
-     * @param request
-     * @return error
-     */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     public ErrorResponse handleException(Exception e, WebRequest request) {

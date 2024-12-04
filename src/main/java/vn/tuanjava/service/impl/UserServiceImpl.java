@@ -6,8 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import vn.tuanjava.configuration.AppConfig;
 import vn.tuanjava.configuration.Translator;
 import vn.tuanjava.dto.request.AddressDTO;
 import vn.tuanjava.dto.request.UserRequestDTO;
@@ -20,7 +25,6 @@ import vn.tuanjava.repository.SearchRepository;
 import vn.tuanjava.repository.UserRepository;
 import vn.tuanjava.repository.specification.UserSpecificationsBuilder;
 import vn.tuanjava.service.UserService;
-import vn.tuanjava.util.Gender;
 import vn.tuanjava.util.UserStatus;
 import vn.tuanjava.util.UserType;
 
@@ -38,7 +42,15 @@ import static vn.tuanjava.util.AppConst.SORT_BY;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
     private final SearchRepository searchRepository;
+
+    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+
+    @Override
+    public UserDetailsService userDetailsService() {
+        return username -> userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
 
     @Override
     public long saveUser(UserRequestDTO request) {
@@ -50,7 +62,7 @@ public class UserServiceImpl implements UserService {
                 .phone(request.getPhone())
                 .email(request.getEmail())
                 .username(request.getUsername())
-                .password(request.getPassword())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .status(request.getStatus())
                 .type(UserType.valueOf(request.getType().toUpperCase()))
                 .build();
@@ -86,7 +98,7 @@ public class UserServiceImpl implements UserService {
             user.setEmail(request.getEmail());
         }
         user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setStatus(request.getStatus());
         user.setType(UserType.valueOf(request.getType().toUpperCase()));
         user.setAddresses(convertToAddress(request.getAddresses()));
@@ -115,8 +127,13 @@ public class UserServiceImpl implements UserService {
                 .id(userId)
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
+                .dateOfBirth(user.getDateOfBirth())
+                .gender(user.getGender())
                 .phone(user.getPhone())
                 .email(user.getEmail())
+                .username(user.getUsername())
+                .status(user.getStatus())
+                .type(user.getType().name())
                 .build();
     }
 
